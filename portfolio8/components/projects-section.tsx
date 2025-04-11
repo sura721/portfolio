@@ -35,7 +35,7 @@ function ProjectCard({ project, onSelectProject, inView }: { project: Project; o
             src={project.image || "/placeholder.svg"}
             alt={project.title}
             fill
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" // Basic example sizes, adjust as needed
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" 
             className="object-cover transition-transform duration-500 group-hover:scale-110"
           />
           <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
@@ -86,14 +86,14 @@ export function ProjectsSection() {
   const { projects, fetchProjects } = useDataStore()
   useEffect(() => {
     fetchProjects()
-  }, []) 
+  }, [fetchProjects,projects]) 
   const [selectedProject, setSelectedProject] = useState<Project | null>(null)
   const [ref, inView] = useInView({
     triggerOnce: true,
     threshold: 0.1,
   })
 
-  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: projects.length > 1 }) // Loop only if more than 1 project
+  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: projects.length > 1 }) 
 
   const scrollPrev = useCallback(() => {
     if (emblaApi) emblaApi.scrollPrev()
