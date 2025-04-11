@@ -5,45 +5,53 @@ import { motion, useScroll, useTransform } from "framer-motion"
 import { useInView } from "react-intersection-observer"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Database, Server, Code, Globe } from "lucide-react"
+import { Database, Server, Code, Globe, MessageSquare } from "lucide-react"
 import {useDataStore} from '../store/dataStores'
+
 
 const experiences = [
   {
-    title: "Full Stack Developer (Freelance)",
-    company: "Self-Employed",
+    title: "Full-Stack Project Development",
+    company: "Personal Projects",
     period: "2022 - Present",
     description:
-      "Worked on various freelance web development projects, including building full-stack applications using the MERN stack (MongoDB, Express.js, React, Node.js) and deploying them on platforms like Vercel and Render.",
+      "Developed and deployed several full-stack web applications for learning and demonstration purposes, utilizing the MERN stack (MongoDB, Express.js, React, Node.js) on platforms like Vercel and Render.",
     icon: <Code className="h-8 w-8" />,
   },
+  { 
+    title: "Real-Time Chat Application", 
+    company: "Personal Project",        
+    period: "2023",                   
+    description:
+      "Built a functional real-time chat application using Socket.IO for WebSocket communication, alongside React, Node.js, and Express. Implemented features such as message persistence, user presence, and room creation.", // Highlight key tech/features
+    icon: <MessageSquare className="h-8 w-8" />, // Appropriate icon
+  },
   {
-    title: "Frontend Developer (Personal Projects)",
-    company: "Self-Employed",
+    title: "Frontend Focused Projects",
+    company: "Personal Projects",
     period: "2021 - Present",
     description:
-      "Built multiple personal projects to showcase frontend development skills, primarily using React and Tailwind CSS. Projects included task managers, portfolio websites, and other web apps.",
+      "Built various user interfaces and single-page applications to solidify frontend skills, primarily using React and Tailwind CSS. Projects included interactive dashboards, tools, and component libraries.",
     icon: <Globe className="h-8 w-8" />,
   },
   {
-    title: "Backend Developer (Freelance)",
-    company: "Self-Employed",
+    title: "Backend & API Development",
+    company: "Personal Projects",
     period: "2021 - Present",
     description:
-      "Focused on backend development, including creating APIs and databases using Node.js and MongoDB for various personal and client projects. Specialized in authentication, data management, and server-side logic.",
+      "Focused on server-side development by creating RESTful APIs and managing databases using Node.js, Express, and MongoDB within personal projects. Implemented features like authentication and data handling.",
     icon: <Server className="h-8 w-8" />,
   },
   {
-    title: "Portfolio Developer",
-    company: "Self-Employed",
+    title: "Portfolio Website Creation",
+    company: "Personal Project",
     period: "2023 - Present",
     description:
-      "Built and maintained my own portfolio website using the MERN stack and Tailwind CSS. Included features like project management, skill categorization, and social media integration.",
+      "Designed, built, and maintained this portfolio website from scratch using the MERN stack and Tailwind CSS, integrating project showcases and skills learned.",
     icon: <Database className="h-8 w-8" />,
-  },
+  }
+
 ]
-
-
 export function AboutSection() {
   const  {skills,fetchSkills} = useDataStore()
   useEffect(()=>{
