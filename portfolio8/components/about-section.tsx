@@ -23,8 +23,8 @@ const experiences = [
     company: "Personal Project",        
     period: "2023",                   
     description:
-      "Built a functional real-time chat application using Socket.IO for WebSocket communication, alongside React, Node.js, and Express. Implemented features such as message persistence, user presence, and room creation.", // Highlight key tech/features
-    icon: <MessageSquare className="h-8 w-8" />, // Appropriate icon
+      "Built a functional real-time chat application using Socket.IO for WebSocket communication, alongside React, Node.js, and Express. Implemented features such as message persistence, user presence, and room creation.", 
+    icon: <MessageSquare className="h-8 w-8" />
   },
   {
     title: "Frontend Focused Projects",

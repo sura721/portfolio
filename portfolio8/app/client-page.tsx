@@ -7,7 +7,6 @@ import { ContactSection } from "@/components/contact-section"
 import { Navbar } from "@/components/navbar"
 import { Footer } from "@/components/footer"
 
-// Import the HeroSection with no SSR to avoid hydration issues with React Three Fiber
 const HeroSection = dynamic(() => import("@/components/hero-section").then((mod) => mod.HeroSection), {
   ssr: false,
   loading: () => (
