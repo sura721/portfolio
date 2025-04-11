@@ -13,7 +13,7 @@ const experiences = [
   {
     title: "Full-Stack Project Development",
     company: "Personal Projects",
-    period: "2022 - Present",
+    period: "2024 - Present",
     description:
       "Developed and deployed several full-stack web applications for learning and demonstration purposes, utilizing the MERN stack (MongoDB, Express.js, React, Node.js) on platforms like Vercel and Render.",
     icon: <Code className="h-8 w-8" />,
@@ -29,7 +29,7 @@ const experiences = [
   {
     title: "Frontend Focused Projects",
     company: "Personal Projects",
-    period: "2021 - Present",
+    period: "2023 - Present",
     description:
       "Built various user interfaces and single-page applications to solidify frontend skills, primarily using React and Tailwind CSS. Projects included interactive dashboards, tools, and component libraries.",
     icon: <Globe className="h-8 w-8" />,
@@ -37,7 +37,7 @@ const experiences = [
   {
     title: "Backend & API Development",
     company: "Personal Projects",
-    period: "2021 - Present",
+    period: "2024 - Present",
     description:
       "Focused on server-side development by creating RESTful APIs and managing databases using Node.js, Express, and MongoDB within personal projects. Implemented features like authentication and data handling.",
     icon: <Server className="h-8 w-8" />,
@@ -45,7 +45,7 @@ const experiences = [
   {
     title: "Portfolio Website Creation",
     company: "Personal Project",
-    period: "2023 - Present",
+    period: "2024 - Present",
     description:
       "Designed, built, and maintained this portfolio website from scratch using the MERN stack and Tailwind CSS, integrating project showcases and skills learned.",
     icon: <Database className="h-8 w-8" />,
