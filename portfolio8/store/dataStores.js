@@ -5,7 +5,6 @@ export const useDataStore = create((set) => {
     try {
       const res = await axiosInstance.get(endpoint);
       set({ [key]: res.data });
-      console.log(res.data)
     } catch (err) {
     }
   };

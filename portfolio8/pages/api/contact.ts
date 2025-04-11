@@ -1,4 +1,4 @@
-import  nodemailer  from 'nodemailer';
+import nodemailer from  "nodemailer"
 import type { NextApiRequest, NextApiResponse } from "next";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -32,7 +32,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     res.status(200).json({ message: "Message sent successfully" });
   } catch (error) {
-    console.error("Email error:", error);
     res.status(500).json({ message: "Error sending email" });
   }
 }

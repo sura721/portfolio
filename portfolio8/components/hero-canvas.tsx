@@ -113,7 +113,6 @@ class ErrorBoundary extends React.Component {
   }
 
   componentDidCatch(error, errorInfo) {
-    console.error("3D rendering error:", error, errorInfo)
   }
 
   render() {

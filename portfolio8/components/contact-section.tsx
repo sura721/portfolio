@@ -66,7 +66,6 @@ export function ContactSection() {
         toast.error(result.message || "Failed to send message. Please try again.");
       }
     } catch (error) {
-      console.error("Contact form submission error:", error);
       toast.error("An error occurred. Please check your connection or try again later.");
     } finally {
       setIsSubmitting(false); 
