@@ -1,0 +1,252 @@
+"use client"
+
+import { useEffect, useState, useCallback } from "react" 
+import { motion, AnimatePresence } from "framer-motion"
+import { useInView } from "react-intersection-observer"
+import Image from "next/image"
+import { Card, CardContent } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import { Github, ExternalLink, ChevronLeft, ChevronRight, X } from "lucide-react"
+import useEmblaCarousel from "embla-carousel-react"
+import { useDataStore } from "@/store/dataStores"
+
+interface Project {
+  _id?: string;
+  title: string;
+  description: string;
+  image?: string;
+  technologies: string[];
+  liveUrl: string;
+  githubUrl: string;
+}
+
+
+function ProjectCard({ project, onSelectProject, inView }: { project: Project; onSelectProject: (project: Project) => void, inView: boolean }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 30 }}
+      animate={inView ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 0.5 }}
+    >
+      <Card className="h-full overflow-hidden group">
+        <div className="relative overflow-hidden aspect-video">
+          <Image
+            src={project.image || "/placeholder.svg"}
+            alt={project.title}
+            fill
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" // Basic example sizes, adjust as needed
+            className="object-cover transition-transform duration-500 group-hover:scale-110"
+          />
+          <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+            <Button
+              variant="outline"
+              className="text-white border-white hover:bg-white/20"
+              onClick={() => onSelectProject(project)}
+            >
+              View Details
+            </Button>
+          </div>
+        </div>
+        <CardContent className="p-6">
+          <h3 className="text-xl font-bold mb-2">{project.title}</h3>
+          <p className="text-muted-foreground mb-4 line-clamp-2">{project.description}</p>
+          <div className="flex flex-wrap gap-2 mb-4">
+            {project.technologies.slice(0, 3).map((tech) => (
+              <Badge key={tech} variant="secondary" className="text-xs">
+                {tech}
+              </Badge>
+            ))}
+            {project.technologies.length > 3 && (
+              <Badge variant="outline" className="text-xs">
+                +{project.technologies.length - 3} more
+              </Badge>
+            )}
+          </div>
+          <div className="flex gap-2">
+            <Button size="sm" variant="outline" asChild>
+              <a href={project.githubUrl} target="_blank" rel="noopener noreferrer">
+                <Github className="h-4 w-4 mr-1" /> Code
+              </a>
+            </Button>
+            <Button size="sm" asChild>
+              <a href={project.liveUrl} target="_blank" rel="noopener noreferrer">
+                <ExternalLink className="h-4 w-4 mr-1" /> Demo
+              </a>
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+    </motion.div>
+  );
+}
+
+
+export function ProjectsSection() {
+  const { projects, fetchProjects } = useDataStore()
+  useEffect(() => {
+    fetchProjects()
+  }, []) 
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null)
+  const [ref, inView] = useInView({
+    triggerOnce: true,
+    threshold: 0.1,
+  })
+
+  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: projects.length > 1 }) // Loop only if more than 1 project
+
+  const scrollPrev = useCallback(() => {
+    if (emblaApi) emblaApi.scrollPrev()
+  }, [emblaApi])
+
+  const scrollNext = useCallback(() => {
+    if (emblaApi) emblaApi.scrollNext()
+  }, [emblaApi])
+
+  const handleSelectProject = useCallback((project: Project) => {
+      setSelectedProject(project);
+  }, []);
+
+  const handleCloseModal = useCallback(() => {
+      setSelectedProject(null);
+  }, []);
+
+  return (
+    <section id="projects" className="py-20 bg-muted/30">
+      <div className="container mx-auto px-4">
+        <motion.div
+          initial={{ opacity: 0, y: 50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="text-center mb-16"
+        >
+          <h2 className="text-3xl md:text-4xl font-bold mb-4">My Projects</h2>
+          <div className="h-1 w-20 bg-primary mx-auto"></div>
+          <p className="mt-4 text-muted-foreground max-w-2xl mx-auto">
+            Here are some of my recent projects showcasing my skills and experience as a MERN stack developer.
+          </p>
+        </motion.div>
+
+        <div ref={ref}>
+          {projects.length === 1 ? (
+            // Single Project Layout
+            <div className="max-w-2xl mx-auto">
+              <ProjectCard project={projects[0]} onSelectProject={handleSelectProject} inView={inView} />
+            </div>
+          ) : projects.length > 1 ? (
+            // Carousel Layout (only if more than 1 project)
+            <div className="relative">
+              <div className="overflow-hidden" ref={emblaRef}>
+                <div className="flex">
+                  {projects.map((project) => (
+                    <div key={project._id || project.title} className="min-w-full md:min-w-[50%] lg:min-w-[33.333%] p-4 flex-shrink-0">
+                        <ProjectCard project={project} onSelectProject={handleSelectProject} inView={inView} />
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Carousel Controls */}
+              <Button
+                variant="ghost"
+                size="icon"
+                className="absolute left-[-10px] md:left-[-15px] top-1/2 -translate-y-1/2 z-10 bg-background/80 hover:bg-background/90 rounded-full shadow-md"
+                onClick={scrollPrev}
+                aria-label="Previous project"
+              >
+                <ChevronLeft className="h-6 w-6" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="absolute right-[-10px] md:right-[-15px] top-1/2 -translate-y-1/2 z-10 bg-background/80 hover:bg-background/90 rounded-full shadow-md"
+                onClick={scrollNext}
+                aria-label="Next project"
+              >
+                <ChevronRight className="h-6 w-6" />
+              </Button>
+            </div>
+          ) : (
+              // Optional: Placeholder/Message when no projects
+              <p className="text-center text-muted-foreground">No projects to display yet.</p>
+          )}
+        </div>
+
+        {/* Project Detail Modal */}
+        <AnimatePresence>
+          {selectedProject && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
+              onClick={handleCloseModal} // Close on backdrop click
+            >
+              <motion.div
+                initial={{ scale: 0.9, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.9, opacity: 0 }}
+                transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                className="bg-background rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto shadow-2xl flex flex-col" // Added flex column for better structure
+                onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside modal
+              >
+                {/* Added explicit header for better structure and close button placement */}
+                <div className="flex justify-between items-center p-4 border-b sticky top-0 bg-background z-10">
+                    <h3 className="text-xl font-bold">{selectedProject.title}</h3>
+                    <Button
+                        variant="ghost"
+                        size="icon"
+                        className="text-muted-foreground rounded-full"
+                        onClick={handleCloseModal}
+                        aria-label="Close project details"
+                    >
+                        <X className="h-5 w-5" />
+                    </Button>
+                </div>
+
+                {/* Scrollable Content Area */}
+                <div className="p-6 flex-grow">
+                    <div className="relative aspect-video max-h-[50vh] w-full mb-6 bg-muted rounded overflow-hidden">
+                      {/* Constrained height, contain object fit */}
+                      <Image
+                        src={selectedProject.image || "/placeholder.svg"}
+                        alt={selectedProject.title}
+                        fill
+                        sizes="(max-width: 1024px) 90vw, 800px" // Example modal sizes
+                        className="object-contain" // Use contain to show full image
+                      />
+                    </div>
+
+                    <p className="text-muted-foreground mb-6">{selectedProject.description}</p>
+                    <div className="mb-6">
+                        <h4 className="font-semibold mb-2 text-lg">Technologies Used:</h4>
+                        <div className="flex flex-wrap gap-2">
+                        {selectedProject.technologies.map((tech) => (
+                            <Badge key={tech} variant="secondary" className="px-3 py-1">
+                            {tech}
+                            </Badge>
+                        ))}
+                        </div>
+                    </div>
+                    <div className="flex flex-wrap gap-4">
+                        <Button asChild size="lg">
+                        <a href={selectedProject.liveUrl} target="_blank" rel="noopener noreferrer">
+                            <ExternalLink className="h-4 w-4 mr-2" /> View Live Demo
+                        </a>
+                        </Button>
+                        <Button variant="outline" asChild size="lg">
+                        <a href={selectedProject.githubUrl} target="_blank" rel="noopener noreferrer">
+                            <Github className="h-4 w-4 mr-2" /> View Source Code
+                        </a>
+                        </Button>
+                    </div>
+                </div>
+
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+    </section>
+  )
+}
