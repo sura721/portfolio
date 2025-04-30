@@ -81,12 +81,12 @@ export function ContactSection() {
     {
       name: "Email",
       icon: <Mail className="h-5 w-5" />,
-      url: "surafeladmas721@gmail.com",
+      url: "https://mail.google.com/mail/?view=cm&to=surafeladmas721@gmail.com",
     },
      {
       name: "Telegram",
       icon: <Send className="h-5 w-5" />,
-      url: "https://t.me/Primex721",
+      url: "https://t.me/Suras721",
     },
     {
       name: "WhatsUp",
