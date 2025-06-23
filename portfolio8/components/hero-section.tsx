@@ -64,7 +64,7 @@ export function HeroSection() {
             variants={itemVariants}
             className="text-xl md:text-2xl mb-8 text-foreground/90 max-w-2xl mx-auto drop-shadow-md"
           >
-            Building modern web applications with MongoDB, Express, React, and Node.js
+            Building modern web applications with MongoDB,prisma,next.js 15,  Express, React, and Node.js
           </motion.p>
           <motion.div variants={itemVariants} className="flex justify-center gap-4">
             <Button size="lg" onClick={handleScroll} className="bg-primary hover:bg-primary/90 text-primary-foreground">
