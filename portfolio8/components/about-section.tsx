@@ -15,23 +15,23 @@ const experiences = [
     company: "Personal Projects",
     period: "2024 - Present",
     description:
-      "Developed and deployed several full-stack web applications for learning and demonstration purposes, utilizing the MERN stack (MongoDB, Express.js, React, Node.js) on platforms like Vercel and Render.",
+      "Developed and deployed multiple full-stack web applications using Next.js, TypeScript, Tailwind CSS, Prisma, and MongoDB. Hosted on Vercel, focusing on clean, scalable, and responsive designs.",
     icon: <Code className="h-8 w-8" />,
   },
-  { 
-    title: "Real-Time Chat Application", 
-    company: "Personal Project",        
-    period: "2023",                   
+  {
+    title: "Real-Time Chat Application",
+    company: "Personal Project",
+    period: "2023",
     description:
-      "Built a functional real-time chat application using Socket.IO for WebSocket communication, alongside React, Node.js, and Express. Implemented features such as message persistence, user presence, and room creation.", 
-    icon: <MessageSquare className="h-8 w-8" />
+      "Built a real-time chat app leveraging WebSocket technology with Socket.IO, integrated within a Next.js and Node.js backend. Implemented features including message persistence, user presence, and chat rooms.",
+    icon: <MessageSquare className="h-8 w-8" />,
   },
   {
     title: "Frontend Focused Projects",
     company: "Personal Projects",
     period: "2023 - Present",
     description:
-      "Built various user interfaces and single-page applications to solidify frontend skills, primarily using React and Tailwind CSS. Projects included interactive dashboards, tools, and component libraries.",
+      "Created various interactive and responsive user interfaces using React, Next.js, and Tailwind CSS. Projects include dashboards, reusable components, and SPA features.",
     icon: <Globe className="h-8 w-8" />,
   },
   {
@@ -39,7 +39,7 @@ const experiences = [
     company: "Personal Projects",
     period: "2024 - Present",
     description:
-      "Focused on server-side development by creating RESTful APIs and managing databases using Node.js, Express, and MongoDB within personal projects. Implemented features like authentication and data handling.",
+      "Designed and implemented RESTful APIs and server-side logic using Next.js API routes, Prisma ORM, and MongoDB. Integrated authentication with Clerk and optimized data workflows.",
     icon: <Server className="h-8 w-8" />,
   },
   {
@@ -47,11 +47,11 @@ const experiences = [
     company: "Personal Project",
     period: "2024 - Present",
     description:
-      "Designed, built, and maintained this portfolio website from scratch using the MERN stack and Tailwind CSS, integrating project showcases and skills learned.",
+      "Built and continuously maintain this portfolio using Next.js, TypeScript, Tailwind CSS, and UploadThing for image storage. Showcases projects, skills, and development journey.",
     icon: <Database className="h-8 w-8" />,
-  }
+  },
+];
 
-]
 export function AboutSection() {
   const  {skills,fetchSkills} = useDataStore()
   useEffect(()=>{
@@ -107,14 +107,14 @@ fetchSkills()
             <h3 className="text-2xl font-bold mb-4">Who I Am</h3>
            
             <p className="text-muted-foreground mb-4">
-            Hi, I’m Sura — a MERN stack developer passionate about turning ideas into web apps. I’m currently building real-world projects to grow my skills and become a pro full-stack developer.
+            Hi, I’m Sura — a FullStack developer passionate about turning ideas into web apps. I’m currently building real-world projects to grow my skills and become a pro full-stack developer.
 
 
             </p>
             <p className="text-muted-foreground">
-            I'm a full-stack developer focused on the MERN stack — MongoDB, Express.js, React, and Node.js. I love building clean, functional, and user-friendly web apps. Every day is a chance to learn, code, and grow.
+           I'm a full-stack developer focused on the modern web stack — Next.js, TypeScript, Tailwind CSS, and MongoDB. I enjoy building clean, dynamic, and responsive web applications with smooth user experiences. Every project is a step forward in learning and growth.
 
-Right now, I’m sharpening my skills by building full-stack projects, exploring UI design, and diving deeper into backend systems.
+Currently, I'm building complete, production-ready full-stack applications while deepening my skills in Clerk authentication, Prisma ORM, UploadThing for file handling, and advanced backend architecture.
             </p>
           </motion.div>
 

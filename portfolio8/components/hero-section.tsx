@@ -58,7 +58,7 @@ export function HeroSection() {
             variants={itemVariants}
             className="text-4xl md:text-6xl lg:text-7xl font-bold mb-4 text-foreground drop-shadow-lg"
           >
-          MERN Stack Developer
+          FullStack Developer
           </motion.h1>
           <motion.p
             variants={itemVariants}
