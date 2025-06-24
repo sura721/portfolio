@@ -86,7 +86,7 @@ export function ContactSection() {
      {
       name: "Telegram",
       icon: <Send className="h-5 w-5" />,
-      url: "https://t.me/Suras721",
+      url: "https://t.me/sura7_21",
     },
     {
       name: "WhatsUp",
@@ -98,7 +98,17 @@ export function ContactSection() {
       icon: <Users className="h-5 w-5" />,
       url: "https://www.facebook.com/profile.php?id=100089772383674",
     },
+     {
+      name: "linkedin",
+      icon: <Linkedin className="h-5 w-5" />,
+      url: "https://www.linkedin.com/in/surafel-admas-8a8393365?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app",
+    },
   ]
+
+
+
+
+
 
   return (
     <section id="contact" className="py-20 bg-background">

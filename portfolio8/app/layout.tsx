@@ -7,12 +7,12 @@ import { ThemeProvider } from "@/components/theme-provider"
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "Sura Man – Full-Stack Web Developer",
+  title: "suras– Full-Stack Web Developer",
   description:
     "Explore the professional portfolio of Sura Man, a full-stack web developer building modern, scalable web applications using cutting-edge technologies.",
   keywords: [
     "suras-portfolio",
-     "surafel admas",
+     "surafel-admas-portfolio ",
     "Full-stack developer",
     "Web developer",
     "Software engineer",
@@ -51,7 +51,7 @@ export const metadata: Metadata = {
     title: "Sura Man – Full-Stack Developer",
     description:
       "Check out the portfolio of Sura Man, a full-stack web developer creating high-performance, scalable apps.",
-    images: ["https://yourdomain.com/og-image.png"], // ✅ same OG image
+    images: ["https://yourdomain.com/og-image.png"], 
   },
   alternates: {
     canonical: "https://yourdomain.com",

@@ -96,7 +96,7 @@ function HeroScene() {
 function Fallback() {
   return (
     <div className="w-full h-full flex items-center justify-center bg-background">
-      <div className="text-primary animate-pulse">Loading 3D scene...</div>
+      <div className="text-primary animate-pulse">Loading ...</div>
     </div>
   )
 }

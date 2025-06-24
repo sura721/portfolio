@@ -8,7 +8,7 @@ const Scene3D = dynamic(() => import("@/components/scene-3d"), {
   ssr: false,
   loading: () => (
     <div className="w-full h-full flex items-center justify-center">
-      <div className="text-primary animate-pulse">Loading 3D scene...</div>
+      <div className="text-primary animate-pulse">Loading  ...</div>
     </div>
   ),
 })
@@ -64,7 +64,7 @@ export function HeroSection() {
             variants={itemVariants}
             className="text-xl md:text-2xl mb-8 text-foreground/90 max-w-2xl mx-auto drop-shadow-md"
           >
-            Building modern web applications with MongoDB,prisma,next.js 15,  Express, React, and Node.js
+          Building fast, scalable web apps with MongoDB, Prisma, Next.js 15, Express, React, and Node.js — from backend logic to beautiful UIs.
           </motion.p>
           <motion.div variants={itemVariants} className="flex justify-center gap-4">
             <Button size="lg" onClick={handleScroll} className="bg-primary hover:bg-primary/90 text-primary-foreground">
@@ -80,11 +80,21 @@ export function HeroSection() {
             >
               Contact Me
             </Button>
+            <Button
+  size="lg"
+  variant="outline"
+  onClick={() => {
+    window.open("/resume.pdf", "_blank")
+  }}
+  className="bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 text-white border-0 hover:opacity-90 transition-all shadow-md"
+>
+  Download Resume
+</Button>
+
           </motion.div>
         </motion.div>
       </div>
 
-      {/* Scroll Indicator */}
       <motion.div
         className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-10"
         animate={{ y: [0, 10, 0] }}
