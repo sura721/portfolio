@@ -66,32 +66,45 @@ export function HeroSection() {
           >
           Building fast, scalable web apps with MongoDB, Prisma, Next.js 15, Express, React, and Node.js — from backend logic to beautiful UIs.
           </motion.p>
-          <motion.div variants={itemVariants} className="flex justify-center gap-4">
-            <Button size="lg" onClick={handleScroll} className="bg-primary hover:bg-primary/90 text-primary-foreground">
-              View Projects
-            </Button>
-            <Button
-              size="lg"
-              variant="outline"
-              onClick={() => {
-                document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })
-              }}
-              className="border-primary text-primary hover:bg-primary/10"
-            >
-              Contact Me
-            </Button>
-            <Button
-  size="lg"
-  variant="outline"
-  onClick={() => {
-    window.open("/resume.pdf", "_blank")
-  }}
-  className="bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 text-white border-0 hover:opacity-90 transition-all shadow-md"
+      <motion.div
+  variants={itemVariants}
+  className="flex flex-wrap justify-center gap-4"
 >
-  Download Resume
-</Button>
+  <div className="flex gap-4">
+    <Button
+      size="lg"
+      onClick={handleScroll}
+      className="bg-primary hover:bg-primary/90 text-primary-foreground"
+    >
+      View Projects
+    </Button>
 
-          </motion.div>
+    <Button
+      size="lg"
+      variant="outline"
+      onClick={() => {
+        document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })
+      }}
+      className="border-primary text-primary hover:bg-primary/10"
+    >
+      Contact Me
+    </Button>
+  </div>
+
+  <div className="w-full sm:w-auto flex justify-center">
+    <Button
+      size="lg"
+      variant="outline"
+      onClick={() => {
+        window.open("/resume.pdf", "_blank")
+      }}
+      className="bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 text-white border-0 hover:opacity-90 transition-all shadow-md"
+    >
+      Download Resume
+    </Button>
+  </div>
+</motion.div>
+
         </motion.div>
       </div>
 
