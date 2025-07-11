@@ -92,7 +92,7 @@ export function HeroSection() {
   </div>
 
   <div className="w-full sm:w-auto flex justify-center">
-    <Button
+    {/* <Button
       size="lg"
       variant="outline"
       onClick={() => {
@@ -101,7 +101,7 @@ export function HeroSection() {
       className="bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 text-white border-0 hover:opacity-90 transition-all shadow-md"
     >
       Download Resume
-    </Button>
+    </Button> */}
   </div>
 </motion.div>
 

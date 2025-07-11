@@ -48,7 +48,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Sura Man – Full-Stack Developer",
+    title: "surafel– Full-Stack Developer",
     description:
       "Check out the portfolio of surafel admas, a full-stack web developer creating high-performance, scalable apps.",
     images: ["https://surafels-portfolio.vercel.app/og-image.png"], 

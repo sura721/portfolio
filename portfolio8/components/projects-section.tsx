@@ -19,16 +19,22 @@ liveUrl: string;
 githubUrl: string;
 }
 const defaultProject: Project = {
-_id: 'default-cochat-project',
-title: "coChat",
-description: "coChat is a modern, real-time chat application designed for seamless communication. It features OAuth and OTP-based authentication, online user indicators, and a fully responsive design across all devices. Built with Socket.IO for real-time interactions on both client and server, coChat delivers a fast, secure, and interactive messaging experience.",
+_id: 'default-ping-shop-project',
+title: "PingShop – AI-Powered E-Commerce Platform",
+description: "PingShop is a clean, modern e-commerce platform built with Next.js and TypeScript, featuring powerful AI-driven product recommendations, secure authentication, cart management, and a fully responsive design for seamless shopping across devices.",
 image: "/project.png",
 technologies: [
-"React", "Node.js", "Express", "MongoDB", "Socket.IO",
-"Tailwind CSS", "OAuth", "OTP method", "Nodemailer"
+"Next.js",
+"TypeScript",
+"TailwindCSS",
+"Prisma",
+"Clerk",
+"MongoDB+Prisma+ORM",
+"Shadcn/UI",
+"inngest",
 ],
-liveUrl: "https://cochat-pink.vercel.app",
-githubUrl: "https://github.com/sura721/coChat",
+liveUrl: "https://ping-shop.vercel.app",
+githubUrl: "https://github.com/sura721/codeAlpha_nextShop/",
 };
 function ProjectCard({ project, onSelectProject, inView }: { project: Project; onSelectProject: (project: Project) => void, inView: boolean }) {
 const imageUrl = project.image || "/placeholder.svg";

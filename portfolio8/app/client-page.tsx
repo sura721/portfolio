@@ -11,7 +11,7 @@ const HeroSection = dynamic(() => import("@/components/hero-section").then((mod)
   ssr: false,
   loading: () => (
     <div className="h-screen flex items-center justify-center bg-background">
-      <div className="animate-pulse text-primary">Loading...</div>
+      {/* <div className="animate-pulse text-primary">Loading...</div> */}
     </div>
   ),
 })

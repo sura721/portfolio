@@ -86,14 +86,12 @@ function HeroScene() {
         </Plane>
       </Float>
 
-      {/* Camera controls */}
-      <OrbitControls enableZoom={false} enablePan={false} enableRotate={false} />
+       <OrbitControls enableZoom={false} enablePan={false} enableRotate={false} />
     </>
   )
 }
 
-// Simple fallback component for loading state
-function Fallback() {
+ function Fallback() {
   return (
     <div className="w-full h-full flex items-center justify-center bg-background">
       <div className="text-primary animate-pulse">Loading ...</div>
@@ -101,8 +99,7 @@ function Fallback() {
   )
 }
 
-// Simple error boundary component
-class ErrorBoundary extends React.Component {
+ class ErrorBoundary extends React.Component {
   constructor(props) {
     super(props)
     this.state = { hasError: false }

@@ -47,8 +47,7 @@ export function AboutSection() {
   const [bioRef, bioInView] = useInView({ triggerOnce: true, threshold: 0.1 })
   const [skillsRef, skillsInView] = useInView({ triggerOnce: true, threshold: 0.1 })
   const [expRef, expInView] = useInView({ triggerOnce: true, threshold: 0.1 })
-  
-  return (
+return (
     <section id="about" className="py-20 bg-background relative overflow-hidden">
       <div className="container mx-auto px-4">
         <motion.div
@@ -69,15 +68,27 @@ export function AboutSection() {
             transition={{ duration: 0.6 }}
             className="flex flex-col justify-center"
           >
-            <section className="space-y-5 text-gray-300">
-              <h2 className="text-xl font-extrabold"><span className="text-indigo-500">Wh</span><span className="text-white">o I Am</span></h2>
-              <p>I’m Sura Man, a <span className="font-semibold">Full-Stack Developer</span> who builds modern, fast, and scalable web apps using Next.js, TypeScript, Tailwind CSS, MongoDB,  PostgreSQL and prisma.</p>
-              <h2 className="text-xl font-extrabold"><span className="text-pink-500">Wh</span><span className="text-white">at I Do</span></h2>
-              <p>I focus on writing clean, maintainable code and creating smooth, responsive UI/UX backed by strong backend logic.</p>
-              <h2 className="text-xl font-extrabold"><span className="text-teal-400">Le</span><span className="text-white">t’s Collaborate</span></h2>
-              <p>Always open to real-world projects. If you value speed, quality, and modern tech — let’s work together.</p>
+             <section className="space-y-5">
+              <h2 className="text-xl font-extrabold text-foreground">
+                <span className="text-indigo-500">Wh</span>o I Am
+              </h2>
+              <p className="text-muted-foreground">
+                I’m Surafel, a <span className="font-semibold text-foreground">Full-Stack Developer</span> who builds modern, fast, and scalable web apps using Next.js, TypeScript, Tailwind CSS, MongoDB,  PostgreSQL and prisma.
+              </p>
+              <h2 className="text-xl font-extrabold text-foreground">
+                <span className="text-pink-500">Wh</span>at I Do
+              </h2>
+              <p className="text-muted-foreground">
+                I focus on writing clean, maintainable code and creating smooth, responsive UI/UX backed by strong backend logic.
+              </p>
+              <h2 className="text-xl font-extrabold text-foreground">
+                <span className="text-teal-400">Le</span>t’s Collaborate
+              </h2>
+              <p className="text-muted-foreground">
+                Always open to real-world projects. If you value speed, quality, and modern tech — let’s work together.
+              </p>
             </section>
-          </motion.div>
+           </motion.div>
 
           <motion.div
             ref={skillsRef}
