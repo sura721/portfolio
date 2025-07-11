@@ -5,7 +5,7 @@ import { motion } from "framer-motion"
 import { useInView } from "react-intersection-observer"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Database, Server, Code, Globe, MessageSquare } from "lucide-react"
+import { Database, Server, Code, Globe, MessageSquare, Laptop, Cloud, ShieldCheck, GitBranch, Zap, Layout, Paintbrush, Rocket, Terminal, Layers } from "lucide-react"
 
  type Skill = {
   _id: string;
@@ -21,7 +21,7 @@ type Experience = {
   icon: string;
 };
 
- const getIconComponent = (iconName: string) => {
+const getIconComponent = (iconName: string) => {
   switch (iconName.toLowerCase()) {
     case 'code':
       return <Code className="h-8 w-8" />;
@@ -30,13 +30,34 @@ type Experience = {
     case 'database':
       return <Database className="h-8 w-8" />;
     case 'globe':
-        return <Globe className="h-8 w-8" />;
+      return <Globe className="h-8 w-8" />;
     case 'chat':
-        return <MessageSquare className="h-8 w-8" />;
+      return <MessageSquare className="h-8 w-8" />;
+    case 'laptop':
+      return <Laptop className="h-8 w-8" />;
+    case 'cloud':
+      return <Cloud className="h-8 w-8" />;
+    case 'shield':
+      return <ShieldCheck className="h-8 w-8" />;
+    case 'git':
+      return <GitBranch className="h-8 w-8" />;
+    case 'zap':
+      return <Zap className="h-8 w-8" />;
+    case 'layout':
+      return <Layout className="h-8 w-8" />;
+    case 'paint':
+      return <Paintbrush className="h-8 w-8" />;
+    case 'rocket':
+      return <Rocket className="h-8 w-8" />;
+    case 'terminal':
+      return <Terminal className="h-8 w-8" />;
+    case 'layers':
+      return <Layers className="h-8 w-8" />;
     default:
       return <Code className="h-8 w-8" />;
   }
 };
+
 
 const fetcher = (url: string) => fetch(url).then(res => res.json())
 
