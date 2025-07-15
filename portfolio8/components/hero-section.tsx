@@ -96,7 +96,7 @@ export function HeroSection() {
       size="lg"
       variant="outline"
       onClick={() => {
-        window.open("/resume.pdf", "_blank")
+        window.open("/surafels-resume.pdf", "_blank")
       }}
       className="bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 text-white border-0 hover:opacity-90 transition-all shadow-md"
     >
