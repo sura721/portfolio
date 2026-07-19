@@ -15,7 +15,7 @@ export async function POST(req: Request) {
 export async function GET() {
   try {
     await connectToDB();
-    const skills = await skill.find({}).sort({ createdAt: -1 });
+    const skills = await skill.find({}).sort({ createdAt: 1 });
     return NextResponse.json(skills, { status: 200 });
   } catch (error) {
     return NextResponse.json({ error: 'Failed to fetch skills' }, { status: 500 });
