@@ -1,70 +1,43 @@
 "use client"
 
+import useSWR from "swr"
 import { motion } from "framer-motion"
 import { useInView } from "react-intersection-observer"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { GraduationCap, Sparkles, BriefcaseBusiness } from "lucide-react"
+import { GraduationCap, Sparkles } from "lucide-react"
 
 type EducationItem = {
+  _id: string
   degree: string
   institution: string
-  expectedGraduation: string
-  note?: string
+  description: string
+  status: string
 }
 
 type CertificationItem = {
-  title: string
+  _id: string
+  name: string
   issuer: string
-  date: string
+  verificationUrl?: string
 }
 
 type TestimonialItem = {
+  _id: string
   name: string
   role: string
   company: string
   quote: string
-  image?: string
+  initials: string
 }
 
-const educationItems: EducationItem[] = [
-  {
-    degree: "B.Sc. in Computer Science",
-    institution: "Addis Ababa University",
-    expectedGraduation: "Expected 2026",
-    note: "Focused on software engineering, systems design, and product development.",
-  },
-]
-
-const certifications: CertificationItem[] = [
-  { title: "AWS Cloud Practitioner", issuer: "Amazon Web Services", date: "2025" },
-  { title: "Google UX Design Foundations", issuer: "Google", date: "2024" },
-]
-
-const testimonials: TestimonialItem[] = [
-  {
-    name: "Martha Bekele",
-    role: "Product Lead",
-    company: "Northstar Labs",
-    quote: "Surafel combines deep technical skill with a calm, thoughtful product mindset. He made the rollout feel effortless.",
-  },
-  {
-    name: "Daniel Tadesse",
-    role: "Founder",
-    company: "Aster AI",
-    quote: "The build quality was excellent and the experience felt polished from day one. He quickly understood the product vision.",
-  },
-  {
-    name: "Selamawit Hailu",
-    role: "Operations Manager",
-    company: "Greenloop",
-    quote: "He was proactive, reliable, and brought strong execution to a fast-moving project. I would work with him again.",
-  },
-]
+const fetcher = (url: string) => fetch(url).then((res) => res.json())
 
 export function EducationAndCertificationsSection() {
   const [ref, inView] = useInView({ triggerOnce: true, threshold: 0.1 })
+  const { data: education = [], error: educationError } = useSWR<EducationItem[]>('/api/education', fetcher)
+  const { data: certifications = [], error: certificationsError } = useSWR<CertificationItem[]>('/api/certifications', fetcher)
 
   return (
     <section id="credentials" className="py-20 bg-background">
@@ -96,16 +69,22 @@ export function EducationAndCertificationsSection() {
                 </div>
               </CardHeader>
               <CardContent className="space-y-4">
-                {educationItems.map((item) => (
-                  <div key={item.degree} className="rounded-lg border border-border/60 bg-muted/20 p-4">
-                    <div className="flex flex-wrap items-center justify-between gap-2">
-                      <h3 className="font-semibold text-foreground">{item.degree}</h3>
-                      <Badge variant="secondary">{item.expectedGraduation}</Badge>
+                {educationError ? (
+                  <p className="text-sm text-muted-foreground">Education data is temporarily unavailable.</p>
+                ) : education.length === 0 ? (
+                  <p className="text-sm text-muted-foreground">No education entries yet.</p>
+                ) : (
+                  education.map((item) => (
+                    <div key={item._id} className="rounded-lg border border-border/60 bg-muted/20 p-4">
+                      <div className="flex flex-wrap items-center justify-between gap-2">
+                        <h3 className="font-semibold text-foreground">{item.degree}</h3>
+                        <Badge variant="secondary">{item.status}</Badge>
+                      </div>
+                      <p className="mt-1 text-sm text-muted-foreground">{item.institution}</p>
+                      {item.description ? <p className="mt-2 text-sm text-muted-foreground">{item.description}</p> : null}
                     </div>
-                    <p className="mt-1 text-sm text-muted-foreground">{item.institution}</p>
-                    {item.note ? <p className="mt-2 text-sm text-muted-foreground">{item.note}</p> : null}
-                  </div>
-                ))}
+                  ))
+                )}
               </CardContent>
             </Card>
           </motion.div>
@@ -124,15 +103,30 @@ export function EducationAndCertificationsSection() {
                 <CardDescription>Short, relevant proof points for the work I do.</CardDescription>
               </CardHeader>
               <CardContent className="space-y-3">
-                {certifications.map((item) => (
-                  <div key={item.title} className="flex items-center justify-between rounded-lg border border-border/60 bg-muted/20 px-4 py-3">
-                    <div>
-                      <p className="font-medium text-foreground">{item.title}</p>
-                      <p className="text-sm text-muted-foreground">{item.issuer}</p>
-                    </div>
-                    <Badge variant="outline">{item.date}</Badge>
-                  </div>
-                ))}
+                {certificationsError ? (
+                  <p className="text-sm text-muted-foreground">Certification data is temporarily unavailable.</p>
+                ) : certifications.length === 0 ? (
+                  <p className="text-sm text-muted-foreground">No certifications yet.</p>
+                ) : (
+                  certifications.map((item) => {
+                    const content = (
+                      <div className="rounded-lg border border-border/60 bg-muted/20 px-4 py-3 transition-colors hover:border-primary/50 hover:bg-primary/5">
+                        <div>
+                          <p className="font-medium text-foreground">{item.name}</p>
+                          <p className="text-sm text-muted-foreground">{item.issuer}</p>
+                        </div>
+                      </div>
+                    )
+
+                    return item.verificationUrl ? (
+                      <a key={item._id} href={item.verificationUrl} target="_blank" rel="noreferrer" className="block">
+                        {content}
+                      </a>
+                    ) : (
+                      <div key={item._id}>{content}</div>
+                    )
+                  })
+                )}
               </CardContent>
             </Card>
           </motion.div>
@@ -144,6 +138,7 @@ export function EducationAndCertificationsSection() {
 
 export function TestimonialsSection() {
   const [ref, inView] = useInView({ triggerOnce: true, threshold: 0.1 })
+  const { data: testimonials = [], error: testimonialsError } = useSWR<TestimonialItem[]>('/api/testimonials', fetcher)
 
   return (
     <section id="testimonials" className="py-20 bg-muted/20">
@@ -161,31 +156,40 @@ export function TestimonialsSection() {
           </p>
         </motion.div>
 
-        <div ref={ref} className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-          {testimonials.map((testimonial, index) => (
-            <motion.div
-              key={testimonial.name}
-              initial={{ opacity: 0, y: 20 }}
-              animate={inView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.4, delay: index * 0.08 }}
-            >
-              <Card className="h-full border-border/60">
-                <CardContent className="p-6">
-                  <div className="flex items-center gap-3 mb-4">
-                    <Avatar className="h-12 w-12 border border-border/60">
-                      {testimonial.image ? <AvatarImage src={testimonial.image} alt={testimonial.name} /> : null}
-                      <AvatarFallback>{testimonial.name.split(" ").map((word) => word[0]).join("").slice(0, 2)}</AvatarFallback>
-                    </Avatar>
-                    <div>
-                      <p className="font-semibold text-foreground">{testimonial.name}</p>
-                      <p className="text-sm text-muted-foreground">{testimonial.role} • {testimonial.company}</p>
+        <div ref={ref} className={`grid gap-6 ${testimonials.length <= 2 ? "md:grid-cols-2 justify-center" : "md:grid-cols-2 xl:grid-cols-3"}`}>
+          {testimonialsError ? (
+            <div className="md:col-span-2 xl:col-span-3 text-center text-sm text-muted-foreground">
+              Testimonials are temporarily unavailable.
+            </div>
+          ) : testimonials.length === 0 ? (
+            <div className="md:col-span-2 xl:col-span-3 text-center text-sm text-muted-foreground">
+              No testimonials yet.
+            </div>
+          ) : (
+            testimonials.map((testimonial, index) => (
+              <motion.div
+                key={testimonial._id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={inView ? { opacity: 1, y: 0 } : {}}
+                transition={{ duration: 0.4, delay: index * 0.08 }}
+              >
+                <Card className="h-full border-border/60">
+                  <CardContent className="p-6">
+                    <div className="flex items-center gap-3 mb-4">
+                      <Avatar className="h-12 w-12 border border-border/60">
+                        <AvatarFallback>{testimonial.initials}</AvatarFallback>
+                      </Avatar>
+                      <div>
+                        <p className="font-semibold text-foreground">{testimonial.name}</p>
+                        <p className="text-sm text-muted-foreground">{testimonial.role} • {testimonial.company}</p>
+                      </div>
                     </div>
-                  </div>
-                  <p className="text-muted-foreground leading-relaxed">“{testimonial.quote}”</p>
-                </CardContent>
-              </Card>
-            </motion.div>
-          ))}
+                    <p className="text-muted-foreground leading-relaxed">“{testimonial.quote}”</p>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            ))
+          )}
         </div>
       </div>
     </section>
