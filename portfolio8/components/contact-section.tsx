@@ -86,7 +86,7 @@ export function ContactSection() {
      {
       name: "Telegram",
       icon: <Send className="h-5 w-5" />,
-      url: "https://t.me/test_721",
+      url: "https://t.me/sura_721",
     },
     {
       name: "WhatsUp",
