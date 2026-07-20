@@ -5,11 +5,12 @@ import { motion } from "framer-motion"
 import { useInView } from "react-intersection-observer"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Database, Server, Code, Globe, MessageSquare, Laptop, Cloud, ShieldCheck, GitBranch, Zap, Layout, Paintbrush, Rocket, Terminal, Layers } from "lucide-react"
+import { Database, Server, Code, Globe, MessageSquare, Laptop, Cloud, ShieldCheck, GitBranch, Zap, Layout, Paintbrush, Rocket, Terminal, Layers, BrainCircuit, Workflow, LockKeyhole, Boxes } from "lucide-react"
 
  type Skill = {
   _id: string;
   name: string;
+  category: string;
 };
 
 type Experience = {
@@ -61,13 +62,36 @@ const getIconComponent = (iconName: string) => {
 
 const fetcher = (url: string) => fetch(url).then(res => res.json())
 
+// The UI owns icons and preferred display order — DB stores only `name` + `category`.
+
 export function AboutSection() {
-  const { data: skills = [] } = useSWR<Skill[]>('/api/skills', fetcher)
+  const { data: skills = [], error: skillsError } = useSWR<Skill[]>('/api/skills', fetcher)
   const { data: experiences = [] } = useSWR<Experience[]>('/api/experience', fetcher)
 
   const [bioRef, bioInView] = useInView({ triggerOnce: true, threshold: 0.1 })
   const [skillsRef, skillsInView] = useInView({ triggerOnce: true, threshold: 0.1 })
   const [expRef, expInView] = useInView({ triggerOnce: true, threshold: 0.1 })
+  // Icon lookup by category — UI concern, stays in frontend
+  const categoryIcons: Record<string, any> = {
+    "AI/ML": BrainCircuit,
+    "Core Stack": Code,
+    "Data & Auth": Database,
+    "Infra/Tools": Server,
+    "Integrations": Workflow,
+    "Frontend": Layout,
+    "Backend": Server,
+    "Domain Knowledge": BrainCircuit,
+  }
+
+  // Build grouped skills from REAL fetched data and keep the categories in a stable order.
+  const categories = Array.from(new Set(skills.map((skill) => skill.category)))
+  const groupedSkills = categories
+    .map((category) => ({
+      title: category,
+      icon: categoryIcons[category] || Code,
+      skills: skills.filter((s) => s.category === category).map((s) => s.name),
+    }))
+    .sort((a, b) => a.title.localeCompare(b.title))
 return (
     <section id="about" className="py-20 bg-background relative overflow-hidden">
       <div className="container mx-auto px-4">
@@ -118,17 +142,36 @@ return (
             transition={{ duration: 0.6 }}
           >
             <h3 className="text-2xl font-bold mb-4">Skills & Technologies</h3>
-            <div className="flex flex-wrap gap-2">
-              {skills.map((skill, index) => (
-                <motion.div
-                  key={skill._id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={skillsInView ? { opacity: 1, y: 0 } : {}}
-                  transition={{ duration: 0.3, delay: index * 0.05 }}
-                >
-                  <Badge variant="outline" className="px-3 py-1 text-sm">{skill.name}</Badge>
-                </motion.div>
-              ))}
+            <div className="space-y-4">
+              {skillsError ? (
+                <p className="text-muted-foreground">Skills are temporarily unavailable.</p>
+              ) : groupedSkills.length === 0 ? (
+                <p className="text-muted-foreground">No skills available yet.</p>
+              ) : (
+                groupedSkills.map((group, groupIndex) => {
+                  const Icon = group.icon
+                  return (
+                    <div key={group.title}>
+                      <div className="mb-2 flex items-center gap-2">
+                        <Icon className="h-4 w-4 text-primary" />
+                        <h4 className="text-sm font-semibold uppercase tracking-[0.2em] text-foreground/80">{group.title}</h4>
+                      </div>
+                      <div className="flex flex-wrap gap-2">
+                        {group.skills.map((skill, index) => (
+                          <motion.div
+                            key={`${group.title}-${skill}`}
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={skillsInView ? { opacity: 1, y: 0 } : {}}
+                            transition={{ duration: 0.3, delay: groupIndex * 0.06 + index * 0.03 }}
+                          >
+                            <Badge variant="outline" className="px-3 py-1 text-sm">{skill}</Badge>
+                          </motion.div>
+                        ))}
+                      </div>
+                    </div>
+                  )
+                })
+              )}
             </div>
           </motion.div>
         </div>

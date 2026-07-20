@@ -1,7 +1,8 @@
 "use client"
 import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
-import { ArrowDown } from "lucide-react"
+import { Badge } from "@/components/ui/badge"
+import { ArrowDown, Sparkles } from "lucide-react"
 import dynamic from "next/dynamic"
 
 const Scene3D = dynamic(() => import("@/components/scene-3d"), {
@@ -54,6 +55,12 @@ export function HeroSection() {
           animate="visible"
           className="container mx-auto px-4 text-center"
         >
+          <motion.div
+            variants={itemVariants}
+            className="mb-6 flex justify-center"
+          >
+          
+          </motion.div>
           <motion.h1
             variants={itemVariants}
             className="text-4xl md:text-6xl lg:text-7xl font-bold mb-4 text-foreground drop-shadow-lg"
