@@ -259,7 +259,7 @@ export function TestimonialsSection() {
             </DialogTrigger>
             <DialogContent className="sm:max-w-xl">
               <DialogHeader>
-                <DialogTitle>Share your experience</DialogTitle>
+                <DialogTitle>Share your experience with developer</DialogTitle>
                 <DialogDescription>
                   Add a short note about working together. Your submission will be reviewed before it appears publicly.
                 </DialogDescription>

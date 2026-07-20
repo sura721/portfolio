@@ -7,6 +7,7 @@ import { ContactSection } from "@/components/contact-section"
 import { Navbar } from "@/components/navbar"
 import { Footer } from "@/components/footer"
 import { EducationAndCertificationsSection, TestimonialsSection } from "@/components/credibility-sections"
+import { CurrentWorkSection } from "@/components/current-work-section"
 
 const HeroSection = dynamic(() => import("@/components/hero-section").then((mod) => mod.HeroSection), {
   ssr: false,
@@ -26,6 +27,7 @@ export function ClientPage() {
       <ProjectsSection />
       <TestimonialsSection />
       <EducationAndCertificationsSection />
+      <CurrentWorkSection />
       <ContactSection />
       <Footer />
     </main>

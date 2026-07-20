@@ -23,7 +23,7 @@ export function Footer() {
               <span className="sr-only">GitHub</span>
             </a>
             <a
-              href="https://www.linkedin.com/in/surafel-admas-8a8393365?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app
+              href="https://www.linkedin.com/in/surafel-admas-430549422?utm_source=share_via&utm_content=profile&utm_medium=member_android
 "
               target="_blank"
               rel="noopener noreferrer"

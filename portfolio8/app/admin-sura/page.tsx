@@ -10,6 +10,7 @@ type Project = { _id: string; title: string };
 type Experience = { _id: string; title: string };
 type Education = { _id: string; degree: string };
 type Certification = { _id: string; name: string };
+type Feature = { _id: string; title: string };
 type Testimonial = {
   _id: string;
   name: string;
@@ -43,6 +44,10 @@ const AdminPage = () => {
     "/api/experience",
     fetcher
   );
+  const { data: features, mutate: mutateFeatures } = useSWR<Feature[]>(
+    "/api/features",
+    fetcher
+  );
   const { data: education, mutate: mutateEducation } = useSWR<Education[]>(
     "/api/education",
     fetcher
@@ -73,6 +78,9 @@ const AdminPage = () => {
   const [educationInstitution, setEducationInstitution] = useState("");
   const [educationDescription, setEducationDescription] = useState("");
   const [educationStatus, setEducationStatus] = useState("");
+  const [featureTitle, setFeatureTitle] = useState("");
+  const [featureDescription, setFeatureDescription] = useState("");
+  const [featureStatus, setFeatureStatus] = useState("Researching");
   const [certificationName, setCertificationName] = useState("");
   const [certificationIssuer, setCertificationIssuer] = useState("");
   const [certificationVerificationUrl, setCertificationVerificationUrl] = useState("");
@@ -235,6 +243,25 @@ const AdminPage = () => {
     }
   };
 
+  const handleFeatureSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const success = await handleApiSubmit(
+      "features",
+      {
+        title: featureTitle,
+        description: featureDescription,
+        status: featureStatus,
+      },
+      "Feature added!",
+      mutateFeatures
+    );
+    if (success) {
+      setFeatureTitle("");
+      setFeatureDescription("");
+      setFeatureStatus("Researching");
+    }
+  };
+
   const handleCertificationSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const success = await handleApiSubmit(
@@ -334,6 +361,41 @@ const AdminPage = () => {
       <h1 className="text-4xl font-bold text-center">Admin Dashboard</h1>
 
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <form
+          onSubmit={handleFeatureSubmit}
+          className="space-y-4 p-6 bg-gray-800 rounded-lg"
+        >
+          <h2 className="text-2xl font-semibold">Add Current Work</h2>
+          <input
+            value={featureTitle}
+            onChange={(e) => setFeatureTitle(e.target.value)}
+            placeholder="Feature title"
+            className="w-full p-2 bg-gray-700 rounded"
+          />
+          <textarea
+            value={featureDescription}
+            onChange={(e) => setFeatureDescription(e.target.value)}
+            placeholder="Short description"
+            className="w-full p-2 bg-gray-700 rounded"
+          />
+          <select
+            value={featureStatus}
+            onChange={(e) => setFeatureStatus(e.target.value)}
+            className="w-full p-2 bg-gray-700 rounded"
+          >
+            <option>Researching</option>
+            <option>In Progress</option>
+            <option>Building</option>
+            <option>Launching Soon</option>
+          </select>
+          <button
+            type="submit"
+            className="w-full px-4 py-2 bg-emerald-600 rounded hover:bg-emerald-700"
+          >
+            Add Current Work
+          </button>
+        </form>
+
         <form
           onSubmit={handleSkillSubmit}
           className="space-y-4 p-6 bg-gray-800 rounded-lg"
@@ -589,17 +651,17 @@ const AdminPage = () => {
 
       <div className="grid lg:grid-cols-3 gap-8">
         <div className="p-6 bg-gray-800 rounded-lg">
-          <h2 className="text-2xl font-semibold mb-4">Manage Skills</h2>
+          <h2 className="text-2xl font-semibold mb-4">Manage Current Work</h2>
           <div className="space-y-2">
-            {skills?.map((skill) => (
+            {features?.map((feature) => (
               <div
-                key={skill._id}
+                key={feature._id}
                 className="flex justify-between items-center bg-gray-700 p-2 rounded"
               >
-                <span>{skill.name}</span>
+                <span className="truncate pr-2">{feature.title}</span>
                 <button
                   onClick={() =>
-                    handleDelete("skills", skill._id, mutateSkills)
+                    handleDelete("features", feature._id, mutateFeatures)
                   }
                   className="px-3 py-1 text-sm bg-red-600 rounded hover:bg-red-700"
                 >
