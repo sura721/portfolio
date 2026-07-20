@@ -8,6 +8,9 @@ import useSWR from "swr";
 type Skill = { _id: string; name: string };
 type Project = { _id: string; title: string };
 type Experience = { _id: string; title: string };
+type Education = { _id: string; degree: string };
+type Certification = { _id: string; name: string };
+type Testimonial = { _id: string; name: string };
 
 // A generic fetcher for useSWR
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
@@ -26,6 +29,18 @@ const AdminPage = () => {
     "/api/experience",
     fetcher
   );
+  const { data: education, mutate: mutateEducation } = useSWR<Education[]>(
+    "/api/education",
+    fetcher
+  );
+  const { data: certifications, mutate: mutateCertifications } = useSWR<Certification[]>(
+    "/api/certifications",
+    fetcher
+  );
+  const { data: testimonials, mutate: mutateTestimonials } = useSWR<Testimonial[]>(
+    "/api/testimonials",
+    fetcher
+  );
 
   // States for your forms (as you had before)
   const [skillName, setSkillName] = useState("");
@@ -41,6 +56,18 @@ const AdminPage = () => {
   const [expDate, setExpDate] = useState("");
   const [expType, setExpType] = useState("Personal Projects");
   const [expIcon, setExpIcon] = useState("code");
+  const [educationDegree, setEducationDegree] = useState("");
+  const [educationInstitution, setEducationInstitution] = useState("");
+  const [educationDescription, setEducationDescription] = useState("");
+  const [educationStatus, setEducationStatus] = useState("");
+  const [certificationName, setCertificationName] = useState("");
+  const [certificationIssuer, setCertificationIssuer] = useState("");
+  const [certificationVerificationUrl, setCertificationVerificationUrl] = useState("");
+  const [testimonialName, setTestimonialName] = useState("");
+  const [testimonialRole, setTestimonialRole] = useState("");
+  const [testimonialCompany, setTestimonialCompany] = useState("");
+  const [testimonialQuote, setTestimonialQuote] = useState("");
+  const [testimonialInitials, setTestimonialInitials] = useState("");
 
   // Generic handler for form submissions
   const handleApiSubmit = async (
@@ -152,6 +179,69 @@ const AdminPage = () => {
       setExpTitle("");
       setExpDesc("");
       setExpDate("");
+    }
+  };
+
+  const handleEducationSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const success = await handleApiSubmit(
+      "education",
+      {
+        degree: educationDegree,
+        institution: educationInstitution,
+        description: educationDescription,
+        status: educationStatus,
+      },
+      "Education entry added!",
+      mutateEducation
+    );
+    if (success) {
+      setEducationDegree("");
+      setEducationInstitution("");
+      setEducationDescription("");
+      setEducationStatus("");
+    }
+  };
+
+  const handleCertificationSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const success = await handleApiSubmit(
+      "certifications",
+      {
+        name: certificationName,
+        issuer: certificationIssuer,
+        verificationUrl: certificationVerificationUrl,
+      },
+      "Certification added!",
+      mutateCertifications
+    );
+    if (success) {
+      setCertificationName("");
+      setCertificationIssuer("");
+      setCertificationVerificationUrl("");
+    }
+  };
+
+  const handleTestimonialSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const success = await handleApiSubmit(
+      "testimonials",
+      {
+        name: testimonialName,
+        role: testimonialRole,
+        company: testimonialCompany,
+        quote: testimonialQuote,
+        initials: testimonialInitials,
+      },
+      "Testimonial added!",
+      mutateTestimonials
+    );
+    if (success) {
+      setTestimonialName("");
+      setTestimonialRole("");
+      setTestimonialCompany("");
+      setTestimonialQuote("");
+      setTestimonialInitials("");
     }
   };
 
@@ -301,6 +391,119 @@ const AdminPage = () => {
         </form>
       </div>
 
+      <div className="grid md:grid-cols-1 lg:grid-cols-3 gap-8">
+        <form
+          onSubmit={handleEducationSubmit}
+          className="space-y-4 p-6 bg-gray-800 rounded-lg"
+        >
+          <h2 className="text-2xl font-semibold">Add Education</h2>
+          <input
+            value={educationDegree}
+            onChange={(e) => setEducationDegree(e.target.value)}
+            placeholder="Degree"
+            className="w-full p-2 bg-gray-700 rounded"
+          />
+          <input
+            value={educationInstitution}
+            onChange={(e) => setEducationInstitution(e.target.value)}
+            placeholder="Institution"
+            className="w-full p-2 bg-gray-700 rounded"
+          />
+          <textarea
+            value={educationDescription}
+            onChange={(e) => setEducationDescription(e.target.value)}
+            placeholder="Description"
+            className="w-full p-2 bg-gray-700 rounded"
+          />
+          <input
+            value={educationStatus}
+            onChange={(e) => setEducationStatus(e.target.value)}
+            placeholder="Status (e.g. In Progress, Completed)"
+            className="w-full p-2 bg-gray-700 rounded"
+          />
+          <button
+            type="submit"
+            className="w-full px-4 py-2 bg-blue-600 rounded hover:bg-blue-700"
+          >
+            Add Education
+          </button>
+        </form>
+
+        <form
+          onSubmit={handleCertificationSubmit}
+          className="space-y-4 p-6 bg-gray-800 rounded-lg"
+        >
+          <h2 className="text-2xl font-semibold">Add Certification</h2>
+          <input
+            value={certificationName}
+            onChange={(e) => setCertificationName(e.target.value)}
+            placeholder="Certification Name"
+            className="w-full p-2 bg-gray-700 rounded"
+          />
+          <input
+            value={certificationIssuer}
+            onChange={(e) => setCertificationIssuer(e.target.value)}
+            placeholder="Issuer"
+            className="w-full p-2 bg-gray-700 rounded"
+          />
+          <input
+            value={certificationVerificationUrl}
+            onChange={(e) => setCertificationVerificationUrl(e.target.value)}
+            placeholder="Verification URL"
+            className="w-full p-2 bg-gray-700 rounded"
+          />
+          <button
+            type="submit"
+            className="w-full px-4 py-2 bg-purple-600 rounded hover:bg-purple-700"
+          >
+            Add Certification
+          </button>
+        </form>
+
+        <form
+          onSubmit={handleTestimonialSubmit}
+          className="space-y-4 p-6 bg-gray-800 rounded-lg"
+        >
+          <h2 className="text-2xl font-semibold">Add Testimonial</h2>
+          <input
+            value={testimonialName}
+            onChange={(e) => setTestimonialName(e.target.value)}
+            placeholder="Name"
+            className="w-full p-2 bg-gray-700 rounded"
+          />
+          <input
+            value={testimonialRole}
+            onChange={(e) => setTestimonialRole(e.target.value)}
+            placeholder="Role"
+            className="w-full p-2 bg-gray-700 rounded"
+          />
+          <input
+            value={testimonialCompany}
+            onChange={(e) => setTestimonialCompany(e.target.value)}
+            placeholder="Company"
+            className="w-full p-2 bg-gray-700 rounded"
+          />
+          <textarea
+            value={testimonialQuote}
+            onChange={(e) => setTestimonialQuote(e.target.value)}
+            placeholder="Quote"
+            className="w-full p-2 bg-gray-700 rounded"
+          />
+          <input
+            value={testimonialInitials}
+            onChange={(e) => setTestimonialInitials(e.target.value)}
+            placeholder="Initials"
+            className="w-full p-2 bg-gray-700 rounded"
+          />
+          <button
+            type="submit"
+            className="w-full px-4 py-2 bg-green-600 rounded hover:bg-green-700"
+          >
+            Add Testimonial
+          </button>
+        </form>
+      </div>
+
       <div className="grid lg:grid-cols-3 gap-8">
         <div className="p-6 bg-gray-800 rounded-lg">
           <h2 className="text-2xl font-semibold mb-4">Manage Skills</h2>
@@ -358,6 +561,74 @@ const AdminPage = () => {
                 <button
                   onClick={() =>
                     handleDelete("experience", exp._id, mutateExperiences)
+                  }
+                  className="px-3 py-1 text-sm bg-red-600 rounded hover:bg-red-700"
+                >
+                  Delete
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <div className="grid lg:grid-cols-3 gap-8">
+        <div className="p-6 bg-gray-800 rounded-lg">
+          <h2 className="text-2xl font-semibold mb-4">Manage Education</h2>
+          <div className="space-y-2">
+            {education?.map((item) => (
+              <div
+                key={item._id}
+                className="flex justify-between items-center bg-gray-700 p-2 rounded"
+              >
+                <span className="truncate pr-2">{item.degree}</span>
+                <button
+                  onClick={() =>
+                    handleDelete("education", item._id, mutateEducation)
+                  }
+                  className="px-3 py-1 text-sm bg-red-600 rounded hover:bg-red-700"
+                >
+                  Delete
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="p-6 bg-gray-800 rounded-lg">
+          <h2 className="text-2xl font-semibold mb-4">Manage Certifications</h2>
+          <div className="space-y-2">
+            {certifications?.map((item) => (
+              <div
+                key={item._id}
+                className="flex justify-between items-center bg-gray-700 p-2 rounded"
+              >
+                <span className="truncate pr-2">{item.name}</span>
+                <button
+                  onClick={() =>
+                    handleDelete("certifications", item._id, mutateCertifications)
+                  }
+                  className="px-3 py-1 text-sm bg-red-600 rounded hover:bg-red-700"
+                >
+                  Delete
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="p-6 bg-gray-800 rounded-lg">
+          <h2 className="text-2xl font-semibold mb-4">Manage Testimonials</h2>
+          <div className="space-y-2">
+            {testimonials?.map((item) => (
+              <div
+                key={item._id}
+                className="flex justify-between items-center bg-gray-700 p-2 rounded"
+              >
+                <span className="truncate pr-2">{item.name}</span>
+                <button
+                  onClick={() =>
+                    handleDelete("testimonials", item._id, mutateTestimonials)
                   }
                   className="px-3 py-1 text-sm bg-red-600 rounded hover:bg-red-700"
                 >
