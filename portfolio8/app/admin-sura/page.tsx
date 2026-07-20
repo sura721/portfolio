@@ -1,22 +1,36 @@
 "use client";
 
 import { UploadButton } from "@/utils/uploadthings";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { Toaster, toast } from "sonner";
 import useSWR from "swr";
 
-// Define types for our data
 type Skill = { _id: string; name: string };
 type Project = { _id: string; title: string };
 type Experience = { _id: string; title: string };
 type Education = { _id: string; degree: string };
 type Certification = { _id: string; name: string };
-type Testimonial = { _id: string; name: string };
+type Testimonial = {
+  _id: string;
+  name: string;
+  role: string;
+  company: string;
+  quote: string;
+  initials: string;
+  status: string;
+};
+type TestimonialDraft = {
+  name: string;
+  role: string;
+  company: string;
+  quote: string;
+  initials: string;
+  status: string;
+};
 
-// A generic fetcher for useSWR
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 const AdminPage = () => {
-  // SWR hooks to fetch existing data and get a 'mutate' function to re-fetch
   const { data: skills, mutate: mutateSkills } = useSWR<Skill[]>(
     "/api/skills",
     fetcher
@@ -38,11 +52,10 @@ const AdminPage = () => {
     fetcher
   );
   const { data: testimonials, mutate: mutateTestimonials } = useSWR<Testimonial[]>(
-    "/api/testimonials",
+    "/api/testimonials?status=all",
     fetcher
   );
 
-  // States for your forms (as you had before)
   const [skillName, setSkillName] = useState("");
   const [skillCategory, setSkillCategory] = useState("");
   const [projectTitle, setProjectTitle] = useState("");
@@ -68,8 +81,26 @@ const AdminPage = () => {
   const [testimonialCompany, setTestimonialCompany] = useState("");
   const [testimonialQuote, setTestimonialQuote] = useState("");
   const [testimonialInitials, setTestimonialInitials] = useState("");
+  const [testimonialDrafts, setTestimonialDrafts] = useState<Record<string, TestimonialDraft>>({});
 
-  // Generic handler for form submissions
+  useEffect(() => {
+    if (!testimonials) return;
+
+    const nextDrafts = testimonials.reduce<Record<string, TestimonialDraft>>((acc, item) => {
+      acc[item._id] = {
+        name: item.name,
+        role: item.role,
+        company: item.company,
+        quote: item.quote,
+        initials: item.initials,
+        status: item.status,
+      };
+      return acc;
+    }, {});
+
+    setTestimonialDrafts(nextDrafts);
+  }, [testimonials]);
+
   const handleApiSubmit = async (
     endpoint: string,
     body: object,
@@ -83,21 +114,20 @@ const AdminPage = () => {
         body: JSON.stringify(body),
       });
       if (response.ok) {
-        alert(successMessage);
-        mutate(); // Re-fetch the data to show the new item
+        toast.success(successMessage);
+        mutate();
         return true;
-      } else {
-        const errorData = await response.json();
-        alert(`Error: ${errorData.error || "Something went wrong"}`);
-        return false;
       }
+
+      const errorData = await response.json().catch(() => null);
+      toast.error(errorData?.error || "Something went wrong");
+      return false;
     } catch (error) {
-      alert(`An unexpected error occurred: ${error}`);
+      toast.error(`An unexpected error occurred: ${error}`);
       return false;
     }
   };
 
-  // Generic handler for deletions
   const handleDelete = async (
     endpoint: string,
     id: string,
@@ -106,23 +136,23 @@ const AdminPage = () => {
     if (!window.confirm("Are you sure you want to delete this item?")) {
       return;
     }
+
     try {
       const response = await fetch(`/api/${endpoint}/${id}`, {
         method: "DELETE",
       });
       if (response.ok) {
-        alert("Item deleted successfully!");
-        mutate(); // Re-fetch the data to remove the item from the list
+        toast.success("Item deleted successfully!");
+        mutate();
       } else {
-        const errorData = await response.json();
-        alert(`Error: ${errorData.error || "Failed to delete"}`);
+        const errorData = await response.json().catch(() => null);
+        toast.error(errorData?.error || "Failed to delete");
       }
     } catch (error) {
-      alert(`An unexpected error occurred: ${error}`);
+      toast.error(`An unexpected error occurred: ${error}`);
     }
   };
 
-  // Form submit handlers (now with mutate)
   const handleSkillSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const success = await handleApiSubmit(
@@ -136,6 +166,7 @@ const AdminPage = () => {
       setSkillCategory("");
     }
   };
+
   const handleProjectSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const technologies = projectTech.split(",").map((t) => t.trim());
@@ -161,6 +192,7 @@ const AdminPage = () => {
       setProjectGithub("");
     }
   };
+
   const handleExperienceSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const success = await handleApiSubmit(
@@ -232,8 +264,9 @@ const AdminPage = () => {
         company: testimonialCompany,
         quote: testimonialQuote,
         initials: testimonialInitials,
+        status: "pending",
       },
-      "Testimonial added!",
+      "Testimonial submitted for review!",
       mutateTestimonials
     );
     if (success) {
@@ -245,11 +278,61 @@ const AdminPage = () => {
     }
   };
 
+  const updateDraftField = (id: string, field: keyof TestimonialDraft, value: string) => {
+    setTestimonialDrafts((current) => ({
+      ...current,
+      [id]: {
+        ...(current[id] ?? {
+          name: "",
+          role: "",
+          company: "",
+          quote: "",
+          initials: "",
+          status: "pending",
+        }),
+        [field]: value,
+      },
+    }));
+  };
+
+  const handleTestimonialUpdate = async (item: Testimonial, statusOverride?: string) => {
+    const draft = testimonialDrafts[item._id] ?? {
+      name: item.name,
+      role: item.role,
+      company: item.company,
+      quote: item.quote,
+      initials: item.initials,
+      status: item.status,
+    };
+
+    try {
+      const response = await fetch(`/api/testimonials/${item._id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ...draft,
+          status: statusOverride ?? draft.status ?? "pending",
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => null);
+        toast.error(errorData?.error || "Failed to update testimonial");
+        return;
+      }
+
+      toast.success(statusOverride ? `Testimonial ${statusOverride}.` : "Testimonial updated.");
+      mutateTestimonials();
+    } catch (error) {
+      toast.error(`An unexpected error occurred: ${error}`);
+    }
+  };
+
   return (
     <div className="container mx-auto p-8 space-y-12 bg-gray-900 text-white min-h-screen">
+      <Toaster position="top-center" richColors />
       <h1 className="text-4xl font-bold text-center">Admin Dashboard</h1>
 
-      {/* --- FORMS (as before) --- */}
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
         <form
           onSubmit={handleSkillSubmit}
@@ -275,7 +358,6 @@ const AdminPage = () => {
             Add Skill
           </button>
         </form>
-        {/* Project and Experience forms here... */}
         <form
           onSubmit={handleProjectSubmit}
           className="space-y-4 p-6 bg-gray-800 rounded-lg col-span-1 md:col-span-2 lg:col-span-1"
@@ -316,10 +398,12 @@ const AdminPage = () => {
             onClientUploadComplete={(res) => {
               if (res) {
                 setProjectImage(res[0].url);
-                alert("Upload Completed");
+                toast.success("Upload Completed");
               }
             }}
-            onUploadError={(error: Error) => alert(`ERROR! ${error.message}`)}
+            onUploadError={(error: Error) => {
+              toast.error(`ERROR! ${error.message}`);
+            }}
           />
           {projectImage && (
             <p className="text-green-400 text-sm truncate">
@@ -362,19 +446,18 @@ const AdminPage = () => {
             className="w-full p-2 bg-gray-700 rounded"
           >
             <option>Personal Projects</option>
-<option>Freelance Projects</option>
-<option>Backend Development</option>
-<option>Database Management</option>
-<option>Frontend Development</option>
-<option>AI Integration</option>
-<option>Deployment</option>
-<option>Authentication</option>
-<option>API Development</option>
-<option>UI/UX Improvements</option>
-<option>Testing & Debugging</option>
-<option>Open Source Contributions</option>
-<option>Team Collaboration</option>
-
+            <option>Freelance Projects</option>
+            <option>Backend Development</option>
+            <option>Database Management</option>
+            <option>Frontend Development</option>
+            <option>AI Integration</option>
+            <option>Deployment</option>
+            <option>Authentication</option>
+            <option>API Development</option>
+            <option>UI/UX Improvements</option>
+            <option>Testing & Debugging</option>
+            <option>Open Source Contributions</option>
+            <option>Team Collaboration</option>
           </select>
           <input
             value={expIcon}
@@ -619,23 +702,82 @@ const AdminPage = () => {
 
         <div className="p-6 bg-gray-800 rounded-lg">
           <h2 className="text-2xl font-semibold mb-4">Manage Testimonials</h2>
-          <div className="space-y-2">
-            {testimonials?.map((item) => (
-              <div
-                key={item._id}
-                className="flex justify-between items-center bg-gray-700 p-2 rounded"
-              >
-                <span className="truncate pr-2">{item.name}</span>
-                <button
-                  onClick={() =>
-                    handleDelete("testimonials", item._id, mutateTestimonials)
-                  }
-                  className="px-3 py-1 text-sm bg-red-600 rounded hover:bg-red-700"
-                >
-                  Delete
-                </button>
-              </div>
-            ))}
+          <div className="space-y-3">
+            {testimonials?.map((item) => {
+              const draft = testimonialDrafts[item._id] ?? {
+                name: item.name,
+                role: item.role,
+                company: item.company,
+                quote: item.quote,
+                initials: item.initials,
+                status: item.status,
+              };
+
+              return (
+                <div key={item._id} className="bg-gray-700 p-3 rounded space-y-2">
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="truncate pr-2">{draft.name}</span>
+                    <span className="text-xs uppercase tracking-wide text-gray-300">{draft.status}</span>
+                  </div>
+                  <input
+                    value={draft.name}
+                    onChange={(e) => updateDraftField(item._id, "name", e.target.value)}
+                    placeholder="Name"
+                    className="w-full p-2 bg-gray-600 rounded"
+                  />
+                  <input
+                    value={draft.role}
+                    onChange={(e) => updateDraftField(item._id, "role", e.target.value)}
+                    placeholder="Role"
+                    className="w-full p-2 bg-gray-600 rounded"
+                  />
+                  <input
+                    value={draft.company}
+                    onChange={(e) => updateDraftField(item._id, "company", e.target.value)}
+                    placeholder="Company"
+                    className="w-full p-2 bg-gray-600 rounded"
+                  />
+                  <textarea
+                    value={draft.quote}
+                    onChange={(e) => updateDraftField(item._id, "quote", e.target.value)}
+                    placeholder="Quote"
+                    className="w-full p-2 bg-gray-600 rounded"
+                  />
+                  <input
+                    value={draft.initials}
+                    onChange={(e) => updateDraftField(item._id, "initials", e.target.value)}
+                    placeholder="Initials"
+                    className="w-full p-2 bg-gray-600 rounded"
+                  />
+                  <div className="flex flex-wrap gap-2">
+                    <button
+                      onClick={() => handleTestimonialUpdate(item, "approved")}
+                      className="px-3 py-1 text-sm bg-green-600 rounded hover:bg-green-700"
+                    >
+                      Approve
+                    </button>
+                    <button
+                      onClick={() => handleTestimonialUpdate(item, "rejected")}
+                      className="px-3 py-1 text-sm bg-yellow-600 rounded hover:bg-yellow-700"
+                    >
+                      Reject
+                    </button>
+                    <button
+                      onClick={() => handleTestimonialUpdate(item)}
+                      className="px-3 py-1 text-sm bg-blue-600 rounded hover:bg-blue-700"
+                    >
+                      Save
+                    </button>
+                    <button
+                      onClick={() => handleDelete("testimonials", item._id, mutateTestimonials)}
+                      className="px-3 py-1 text-sm bg-red-600 rounded hover:bg-red-700"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
       </div>

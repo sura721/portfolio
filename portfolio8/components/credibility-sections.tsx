@@ -1,11 +1,24 @@
 "use client"
 
-import useSWR from "swr"
+import { useState } from "react"
+import useSWR, { useSWRConfig } from "swr"
 import { motion } from "framer-motion"
 import { useInView } from "react-intersection-observer"
+import { toast, Toaster } from "sonner"
 import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
 import { GraduationCap, Sparkles } from "lucide-react"
 
 type EducationItem = {
@@ -30,6 +43,7 @@ type TestimonialItem = {
   company: string
   quote: string
   initials: string
+  status?: string
 }
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json())
@@ -138,10 +152,54 @@ export function EducationAndCertificationsSection() {
 
 export function TestimonialsSection() {
   const [ref, inView] = useInView({ triggerOnce: true, threshold: 0.1 })
+  const { mutate } = useSWRConfig()
   const { data: testimonials = [], error: testimonialsError } = useSWR<TestimonialItem[]>('/api/testimonials', fetcher)
+  const [formData, setFormData] = useState({
+    name: '',
+    role: '',
+    company: '',
+    quote: '',
+    initials: '',
+  })
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isDialogOpen, setIsDialogOpen] = useState(false)
+
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault()
+
+    if (!formData.name.trim() || !formData.role.trim() || !formData.company.trim() || !formData.quote.trim() || !formData.initials.trim()) {
+      toast.error('Please fill in every testimonial field before submitting.')
+      return
+    }
+
+    setIsSubmitting(true)
+
+    try {
+      const response = await fetch('/api/testimonials', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...formData, status: 'pending' }),
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => null)
+        throw new Error(errorData?.error || 'Unable to submit testimonial right now.')
+      }
+
+      toast.success('Thanks! Your testimonial is now pending review.')
+      setFormData({ name: '', role: '', company: '', quote: '', initials: '' })
+      setIsDialogOpen(false)
+      mutate('/api/testimonials')
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : 'Unable to submit testimonial right now.')
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
 
   return (
     <section id="testimonials" className="py-20 bg-muted/20">
+      <Toaster position="top-center" richColors />
       <div className="container mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, y: 40 }}
@@ -152,7 +210,7 @@ export function TestimonialsSection() {
           <h2 className="text-3xl md:text-4xl font-bold mb-4">Testimonials</h2>
           <div className="h-1 w-20 bg-primary mx-auto"></div>
           <p className="mt-4 text-muted-foreground max-w-2xl mx-auto">
-            A few early words from collaborators and clients that I&apos;ll swap for live feedback later.
+            A few early words from collaborators and clients, shared in a simple way that stays subtle on the page.
           </p>
         </motion.div>
 
@@ -190,6 +248,61 @@ export function TestimonialsSection() {
               </motion.div>
             ))
           )}
+        </div>
+
+        <div className="mt-8 flex justify-center">
+          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+            <DialogTrigger asChild>
+              <Button variant="outline" size="sm" className="text-sm">
+                Leave a testimonial
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-xl">
+              <DialogHeader>
+                <DialogTitle>Share your experience</DialogTitle>
+                <DialogDescription>
+                  Add a short note about working together. Your submission will be reviewed before it appears publicly.
+                </DialogDescription>
+              </DialogHeader>
+              <form onSubmit={handleSubmit} className="space-y-4 pt-2">
+                <div className="grid gap-4 md:grid-cols-2">
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-foreground" htmlFor="testimonial-name">Name</label>
+                    <Input id="testimonial-name" value={formData.name} onChange={(event) => setFormData((current) => ({ ...current, name: event.target.value }))} placeholder="Your full name" />
+                    <p className="text-xs text-muted-foreground">This is the name shown publicly on the quote card.</p>
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-foreground" htmlFor="testimonial-role">Role</label>
+                    <Input id="testimonial-role" value={formData.role} onChange={(event) => setFormData((current) => ({ ...current, role: event.target.value }))} placeholder="e.g. Client, collaborator, or manager" />
+                    <p className="text-xs text-muted-foreground">Use your job title or how you worked with me.</p>
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-foreground" htmlFor="testimonial-company">Company or project</label>
+                    <Input id="testimonial-company" value={formData.company} onChange={(event) => setFormData((current) => ({ ...current, company: event.target.value }))} placeholder="Company, team, or project name" />
+                    <p className="text-xs text-muted-foreground">This helps give the quote a little context.</p>
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-foreground" htmlFor="testimonial-initials">Initials</label>
+                    <Input id="testimonial-initials" value={formData.initials} onChange={(event) => setFormData((current) => ({ ...current, initials: event.target.value }))} placeholder="e.g. JS" />
+                    <p className="text-xs text-muted-foreground">These appear in the small avatar circle. No profile photo is required.</p>
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-foreground" htmlFor="testimonial-quote">Your quote</label>
+                  <Textarea id="testimonial-quote" value={formData.quote} onChange={(event) => setFormData((current) => ({ ...current, quote: event.target.value }))} placeholder="Share a short note about the experience." rows={4} />
+                  <p className="text-xs text-muted-foreground">Keep it short and specific so it feels natural on the site.</p>
+                </div>
+                <div className="flex justify-end gap-2">
+                  <Button type="button" variant="ghost" onClick={() => setIsDialogOpen(false)}>
+                    Cancel
+                  </Button>
+                  <Button type="submit" variant="outline" disabled={isSubmitting}>
+                    {isSubmitting ? 'Submitting...' : 'Submit testimonial'}
+                  </Button>
+                </div>
+              </form>
+            </DialogContent>
+          </Dialog>
         </div>
       </div>
     </section>
