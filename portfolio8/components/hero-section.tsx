@@ -103,7 +103,7 @@ export function HeroSection() {
       size="lg"
       variant="outline"
       onClick={() => {
-        window.open("/surafels-resume.pdf", "_blank")
+        window.open("/Surafel_Admas_Resume.pdf", "_blank")
       }}
       className="bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 text-white border-0 hover:opacity-90 transition-all shadow-md"
     >
